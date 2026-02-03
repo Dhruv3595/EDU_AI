@@ -65,14 +65,20 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware - ALLOW ALL FOR PRODUCTION DEPLOYMENT
-# In a real production environment, you should specify your Vercel URL
-cors_origins = os.getenv("CORS_ORIGINS", "*").split(",")
+# CORS middleware configuration
+cors_origins_raw = os.getenv("CORS_ORIGINS", "*")
+if cors_origins_raw == "*":
+    # If using wildcard, credentials must be False for browsers to allow it
+    allow_origins = ["*"]
+    allow_credentials = False
+else:
+    allow_origins = cors_origins_raw.split(",")
+    allow_credentials = True
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
-    allow_credentials=True,
+    allow_origins=allow_origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
