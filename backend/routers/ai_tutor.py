@@ -89,11 +89,10 @@ async def chat_with_tutor(
     # List of Gemini models to try in order (newest/best first)
     gemini_models_to_try = [
         gemini_model,  # User-specified model first
-        "gemini-2.0-flash-exp",  # Latest experimental
-        "gemini-1.5-flash",  # Stable 1.5
-        "gemini-1.5-flash-latest",
-        "gemini-1.5-pro",
-        "gemini-pro"  # Older model name
+        "gemini-2.5-flash",  # Current fast model
+        "gemini-2.5-pro",  # More capable 2.5 model
+        "gemini-2.0-flash",  # Alternative 2.0 model
+        "gemini-2.0-flash-001"  # Stable pinned version
     ]
     
     # Remove duplicates while preserving order
@@ -232,7 +231,7 @@ def test_gemini():
     Remove or protect it before deploying to production.
     """
     gemini_key = os.getenv("GEMINI_API_KEY")
-    gemini_model = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+    gemini_model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     if not gemini_key:
         return {"ok": False, "error": "GEMINI_API_KEY not configured in environment"}
 
