@@ -65,27 +65,13 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware configuration
-# For production, we allow the specific Vercel origin and common development origins
-# We also use allow_origin_regex to support all Vercel preview deployments
-cors_origins_raw = os.getenv("CORS_ORIGINS", "*")
-allow_origins = []
-if cors_origins_raw != "*":
-    allow_origins = cors_origins_raw.split(",")
-
-# Add default development origins
-allow_origins.extend([
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:3000",
-])
-
+# Ultra-compatible CORS for Production
+# Using allow_origins=["*"] with allow_credentials=False is the most reliable 
+# way to prevent browser CORS blocks for public APIs using Bearer tokens.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allow_origins,
-    allow_origin_regex=r"https://.*\.vercel\.app",  # Support all Vercel deployments
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
