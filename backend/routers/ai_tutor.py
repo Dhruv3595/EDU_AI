@@ -4,7 +4,7 @@ AI Tutor Router - Gemini API integration for all education levels
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, delete
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -355,3 +355,19 @@ async def get_chat_history(
             for conv in conversations
         ]
     }
+
+@router.post("/clear-history")
+async def clear_chat_history(
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Clear all chat history for the current user"""
+    user_id = int(current_user["sub"])
+    
+    await db.execute(
+        delete(AIConversation).where(AIConversation.user_id == user_id)
+    )
+    await db.commit()
+    
+    logger.info(f"Cleared chat history for user {user_id}")
+    return {"message": "Chat history cleared successfully"}
