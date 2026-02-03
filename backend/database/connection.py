@@ -15,6 +15,12 @@ DATABASE_URL = os.getenv(
     "postgresql+asyncpg://postgres:newpassword123@localhost:5432/eduai"
 )
 
+# Fix for Render/Heroku URLs which start with postgres:// but need postgresql+asyncpg://
+if DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
+elif DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
+
 # Create async engine
 engine = create_async_engine(
     DATABASE_URL,
