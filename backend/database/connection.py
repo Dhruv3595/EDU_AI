@@ -21,9 +21,14 @@ if DATABASE_URL.startswith("postgresql://"):
 elif DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
 
-# Debugging (masking password)
-db_host = DATABASE_URL.split("@")[-1].split("/")[0] if "@" in DATABASE_URL else "localhost"
-logger.info(f"Connecting to database at: {db_host}")
+# Debugging: Extract host for logging (masking credentials)
+try:
+    # URL format: driver://user:pass@host:port/db
+    db_host = DATABASE_URL.split("@")[-1].split("/")[0].split(":")[0]
+except Exception:
+    db_host = "unknown"
+
+logger.info(f"Database Initialization: connecting to host '{db_host}'...")
 
 # Create async engine with SSL requirement for production
 engine_args = {
