@@ -38,7 +38,13 @@ engine_args = {
 
 # Add SSL for non-localhost connections
 if "localhost" not in db_host and "127.0.0.1" not in db_host:
-    engine_args["connect_args"] = {"ssl": True}
+    # Render and other cloud providers often use self-signed certs for internal DBs
+    # We use 'require' to ensure encryption while allowing self-signed certs
+    import ssl
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    engine_args["connect_args"] = {"ssl": ctx}
 
 engine = create_async_engine(DATABASE_URL, **engine_args)
 
