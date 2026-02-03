@@ -39,6 +39,17 @@ async def lifespan(app: FastAPI):
     else:
         await init_db()
         logger.info("Database initialized successfully")
+        
+        # Auto-seed if database is empty
+        try:
+            from seed_data import run_seed
+            from database.connection import AsyncSessionLocal
+            async with AsyncSessionLocal() as session:
+                seeded = await run_seed(session)
+                if seeded:
+                    logger.info("Database auto-seeded successfully")
+        except Exception as e:
+            logger.error(f"Auto-seeding failed: {e}")
     yield
     # Shutdown
     logger.info("Shutting down EduAI Backend...")
