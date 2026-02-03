@@ -15,19 +15,27 @@ DATABASE_URL = os.getenv(
     "postgresql+asyncpg://postgres:newpassword123@localhost:5432/eduai"
 )
 
-# Fix for Render/Heroku URLs which start with postgres:// but need postgresql+asyncpg://
+# Handle Render/Heroku URLs (convert postgres:// to postgresql+asyncpg://)
 if DATABASE_URL.startswith("postgresql://"):
     DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
 elif DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
 
-# Create async engine
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=os.getenv("DEBUG", "False").lower() == "true",
-    poolclass=NullPool,
-    future=True
-)
+# Debugging (masking password)
+db_host = DATABASE_URL.split("@")[-1].split("/")[0] if "@" in DATABASE_URL else "localhost"
+logger.info(f"Connecting to database at: {db_host}")
+
+# Create async engine with SSL requirement for production
+engine_args = {
+    "echo": os.getenv("DEBUG", "False").lower() == "true",
+    "poolclass": NullPool,
+}
+
+# Add SSL for non-localhost connections
+if "localhost" not in db_host and "127.0.0.1" not in db_host:
+    engine_args["connect_args"] = {"ssl": True}
+
+engine = create_async_engine(DATABASE_URL, **engine_args)
 
 # Create async session factory
 AsyncSessionLocal = async_sessionmaker(
