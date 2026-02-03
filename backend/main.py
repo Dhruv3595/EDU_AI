@@ -66,19 +66,26 @@ app = FastAPI(
 )
 
 # CORS middleware configuration
+# For production, we allow the specific Vercel origin and common development origins
+# We also use allow_origin_regex to support all Vercel preview deployments
 cors_origins_raw = os.getenv("CORS_ORIGINS", "*")
-if cors_origins_raw == "*":
-    # If using wildcard, credentials must be False for browsers to allow it
-    allow_origins = ["*"]
-    allow_credentials = False
-else:
+allow_origins = []
+if cors_origins_raw != "*":
     allow_origins = cors_origins_raw.split(",")
-    allow_credentials = True
+
+# Add default development origins
+allow_origins.extend([
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+])
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
-    allow_credentials=allow_credentials,
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Support all Vercel deployments
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
