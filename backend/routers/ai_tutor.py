@@ -107,8 +107,8 @@ async def chat_with_tutor(
         # Try each model in sequence until one works
         for try_model in gemini_models_to_try:
             try:
-                # Use the correct Gemini API v1beta endpoint
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/{try_model}:generateContent?key={gemini_key}"
+                # Use the correct Gemini API v1 endpoint
+                url = f"https://generativelanguage.googleapis.com/v1/models/{try_model}:generateContent?key={gemini_key}"
 
                 resp = requests.post(
                     url,
@@ -238,8 +238,8 @@ def test_gemini():
 
     prompt = "You are a helpful assistant. Reply briefly: What is recursion?"
 
-    # Use the correct Gemini API v1beta endpoint
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{gemini_model}:generateContent?key={gemini_key}"
+    # Use the correct Gemini API v1 endpoint
+    url = f"https://generativelanguage.googleapis.com/v1/models/{gemini_model}:generateContent?key={gemini_key}"
 
     attempts = 3
     backoff = 1
