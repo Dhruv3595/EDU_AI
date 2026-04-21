@@ -1,5 +1,10 @@
 # 🎓 EduAI - AI-Powered Education Platform
-DEVELOPED BY DHRUV PANDYA
+## 👨‍💻 Developed By
+Dhruv Pandya  
+Full Stack Developer  
+
+- GitHub: https://github.com/Dhruv3595
+- LinkedIn: https://linkedin.com/in/dhruv-pandya07
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)](https://www.typescriptlang.org/)
