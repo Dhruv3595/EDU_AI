@@ -1,4 +1,5 @@
 # 🎓 EduAI - AI-Powered Education Platform
+DEVELOPED BY DHRUV PANDYA
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)](https://www.typescriptlang.org/)
